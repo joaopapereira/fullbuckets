@@ -26,6 +26,8 @@ public class Game {
     private const int boardSize = 5;
     public int BoardSize { get { return boardSize; } }
     private Player player;
+    private int maxDropsPerBucket;
+    public int MaxDropsPerBucket { get { return maxDropsPerBucket; } set { maxDropsPerBucket = value;  } }
 
     private int[][] board;
     public Game(Player player)

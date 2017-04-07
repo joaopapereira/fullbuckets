@@ -8,9 +8,10 @@ public class GameUI : MonoBehaviour
 
     public BucketUI[][] buckets;
     public Button[] bucketButtons;
-    public Text test;
 
-    public void Awake()
+    public int maxDropsPerBucket;
+
+    public void Start()
     {
         if (player == null)
         {
@@ -18,9 +19,12 @@ public class GameUI : MonoBehaviour
         }
         if (game == null)
         {
-            game = new Game(player);
+            game = new Game(player)
+            {
+                MaxDropsPerBucket = maxDropsPerBucket
+            };
         }
-        if(buckets == null)
+        if (buckets == null)
         {
             buckets = new BucketUI[game.BoardSize][];
             for(int i = 0; i < game.BoardSize; i++)
@@ -31,13 +35,14 @@ public class GameUI : MonoBehaviour
                     buckets[i][j] = bucketButtons[i * game.BoardSize + j].GetComponent<BucketUI>();
                     buckets[i][j].positionX = j;
                     buckets[i][j].positionY = i;
+                    buckets[i][j].SetGameController(this);
                 }
             }
         }
-    }
-
-    public void ClickBucket(int positionX, int positionY)
+    }   
+    
+    public bool ExplosionBucket(Bucket bucket)
     {
-
+        return true;
     }
 }
