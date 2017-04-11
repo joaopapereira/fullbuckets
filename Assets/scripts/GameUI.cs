@@ -5,6 +5,9 @@ public class GameUI : MonoBehaviour
 {
     private Game game;
     private Player player;
+    public Transform drop;
+    public int velocity;
+
 
     public BucketUI[][] buckets;
     public Button[] bucketButtons;
@@ -41,8 +44,20 @@ public class GameUI : MonoBehaviour
         }
     }   
     
-    public bool ExplosionBucket(Bucket bucket)
+    public bool ExplosionBucket(BucketUI bucket)
     {
+        CreateDrop(new Vector3(velocity, 0, 0), bucket.transform.position);
+        CreateDrop(new Vector3(-velocity, 0, 0), bucket.transform.position);
+        CreateDrop(new Vector3(0, velocity, 0), bucket.transform.position);
+        CreateDrop(new Vector3(0, -velocity, 0), bucket.transform.position);
         return true;
+    }
+    private void CreateDrop(Vector3 speed, Vector3 startLocation)
+    {
+        DropUI drop = Instantiate(this.drop, startLocation, transform.rotation).GetComponent<DropUI>();
+        drop.speed = speed;
+        drop.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
+        drop.transform.position = startLocation;
+
     }
 }

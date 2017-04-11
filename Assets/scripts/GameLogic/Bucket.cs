@@ -43,4 +43,13 @@ public class Bucket {
     {
         this.currentSize = currentSize;
     }
+
+    public bool DropLanded()
+    {
+        if(Size == 0)
+            return false;
+
+        AddDrop();
+        return true;
+    }
 }
