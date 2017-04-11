@@ -7,11 +7,13 @@ public class BucketUI : MonoBehaviour
     public int positionX;
     public int positionY;
     public Text label;
+    public Button button;
     private Bucket bucket;
     private GameUI gameController;
 
-    public void Awake()
+    public void Update()
     {
+       button.interactable = gameController.CanUserPlay();
     }
 
     public void AddDrop()

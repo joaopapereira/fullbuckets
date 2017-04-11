@@ -13,6 +13,7 @@ public class GameUI : MonoBehaviour
     public Button[] bucketButtons;
 
     public int maxDropsPerBucket;
+    private int flyingDrops;
 
     public void Start()
     {
@@ -52,14 +53,28 @@ public class GameUI : MonoBehaviour
         CreateDrop(new Vector3(0, -velocity, 0), bucket.transform.position, 0);
         return true;
     }
+
     private void CreateDrop(Vector3 speed, Vector3 startLocation, int rotationAngle)
     {
         DropUI drop = Instantiate(this.drop, startLocation, transform.rotation).GetComponent<DropUI>();
         drop.speed = speed;
         drop.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
         drop.transform.position = startLocation;
-       // drop.transform.Rotate(Vector3.up, rotationAngle, Space.Self);
         drop.transform.Rotate(new Vector3(0, 0, rotationAngle));
+    }
 
+    public void AddFlyingDrop()
+    {
+        flyingDrops++;
+    }
+
+    public void DiedFlyingDrop()
+    {
+        flyingDrops--;
+    }
+
+    public bool CanUserPlay()
+    {
+        return flyingDrops == 0;
     }
 }
