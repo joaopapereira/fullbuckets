@@ -28,7 +28,7 @@ public class BucketUI : MonoBehaviour
 
         if (bucket == null)
         {
-            bucket = new Bucket(gameController.maxDropsPerBucket);
+            bucket = new Bucket(gameController.maxDropsPerBucket, gameController.GetGame());
             UpdateButton();
             bucket.SetExplosionCallback(this.ExplosionBucket);
         }

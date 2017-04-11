@@ -28,6 +28,7 @@ public class Game {
     private Player player;
     private int maxDropsPerBucket;
     public int MaxDropsPerBucket { get { return maxDropsPerBucket; } set { maxDropsPerBucket = value;  } }
+    public int TotalDropsLeft { get { return player.Drops; } }
 
     private int[][] board;
     public Game(Player player)

@@ -5,15 +5,18 @@ public class Bucket {
     private int maximumSize;
     private int currentSize;
     private Func<Bucket, bool> explosionCallback;
+    private Game game;
+
     public int Size
     {
         get { return currentSize; }
     }
 
-    public Bucket(int maximumSize)
+    public Bucket(int maximumSize, Game game)
     {
         Reset();
         this.maximumSize = maximumSize;
+        this.game = game;
     }
 
     public void AddDrop()

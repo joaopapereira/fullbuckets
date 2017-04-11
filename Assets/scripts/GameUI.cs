@@ -11,6 +11,7 @@ public class GameUI : MonoBehaviour
 
     public BucketUI[][] buckets;
     public Button[] bucketButtons;
+    public Text dropsLeftCounter;
 
     public int maxDropsPerBucket;
     private int flyingDrops;
@@ -21,13 +22,17 @@ public class GameUI : MonoBehaviour
         {
             player = new PlayerImpl();
         }
+
         if (game == null)
         {
             game = new Game(player)
             {
                 MaxDropsPerBucket = maxDropsPerBucket
             };
+
+            UpdateNumberOfDropsLeft();
         }
+
         if (buckets == null)
         {
             buckets = new BucketUI[game.BoardSize][];
@@ -63,6 +68,11 @@ public class GameUI : MonoBehaviour
         drop.transform.Rotate(new Vector3(0, 0, rotationAngle));
     }
 
+    public void UpdateNumberOfDropsLeft()
+    {
+        dropsLeftCounter.text = game.TotalDropsLeft.ToString();
+    }
+
     public void AddFlyingDrop()
     {
         flyingDrops++;
@@ -76,5 +86,10 @@ public class GameUI : MonoBehaviour
     public bool CanUserPlay()
     {
         return flyingDrops == 0;
+    }
+
+    public Game GetGame()
+    {
+        return game;
     }
 }
