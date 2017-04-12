@@ -52,6 +52,7 @@ public class GameUI : MonoBehaviour
     
     public bool ExplosionBucket(BucketUI bucket)
     {
+        game.BucketExploded();
         CreateDrop(new Vector3(velocity, 0, 0), bucket.transform.position, 90);
         CreateDrop(new Vector3(-velocity, 0, 0), bucket.transform.position, 270);
         CreateDrop(new Vector3(0, velocity, 0), bucket.transform.position, 180);

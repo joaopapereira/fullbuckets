@@ -18,7 +18,7 @@ public class BucketUI : MonoBehaviour
 
     public void AddDrop()
     {
-        bucket.AddDrop();
+        bucket.PlayerClick();
         UpdateButton();
     }
 

@@ -1,93 +1,127 @@
 ﻿using NUnit.Framework;
 
-[TestFixture]
 public class BucketTest {
-    private Bucket bucket;
-    private Game game;
-    private Player player;
-
-    [SetUp]
-    public void Setup()
+    public abstract class BaseBucketTest
     {
-        player = new PlayerImpl()
+        protected Bucket bucket;
+        protected Game game;
+        protected Player player;
+
+        [SetUp]
+        public void Setup()
         {
-            Drops = 10
-        };
-        game = new Game(player);
-        bucket = new Bucket(5, game);
-        
+            player = new PlayerImpl()
+            {
+                Drops = 10
+            };
+            game = new Game(player);
+            bucket = new Bucket(5, game);
+
+            SetUp();
+        }
+        protected abstract void SetUp();
+    }
+    public class ExplosionMock
+    {
+        private int called = 0;
+        public bool ExplosionCallback(Bucket bucket)
+        {
+            called++;
+            return true;
+        }
+
+        public bool HasBeenCalled()
+        {
+            return called > 0;
+        }
     }
 
-    [Test]
-    public void AddOneDropToEmptyBucket_TotalDropsIs1()
+    [TestFixture]
+    public class WhenBucketIsFull: BaseBucketTest
     {
-        bucket.AddDrop();
-        Assert.AreEqual(1, bucket.Size);
-        Assert.IsFalse(bucket.Full());
-        Assert.AreEqual(9, player.Drops);
+        private ExplosionMock explosionMock;
+
+        protected override void SetUp()
+        {
+            explosionMock = new ExplosionMock();
+            bucket.SetExplosionCallback(explosionMock.ExplosionCallback);
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+        }
+
+        [Test]
+        public void AddSixDropToEmptyBucket_BucketExplodeCallFunctionAndResetsDropCount()
+        {
+            bucket.PlayerClick();
+            Assert.AreEqual(0, bucket.Size);
+            Assert.IsFalse(bucket.Full());
+            Assert.IsTrue(explosionMock.HasBeenCalled());
+        }
+
+        [Test]
+        public void FiveDropsAndDropReachesBucket_ShouldAllowDropToLandAndBucketExplode()
+        {
+            Assert.IsTrue(bucket.DropLanded());
+            Assert.AreEqual(0, bucket.Size);
+            Assert.IsFalse(bucket.Full());
+            Assert.IsTrue(explosionMock.HasBeenCalled());
+        }
     }
 
-    [Test]
-    public void AddFiveDropToEmptyBucket_BucketIsFull()
+    public class WhenUserClick: BaseBucketTest
     {
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        Assert.AreEqual(5, bucket.Size);
-        Assert.IsTrue(bucket.Full());
-        Assert.AreEqual(5, player.Drops);
-    }
+        protected override void SetUp()
+        {
 
-    [Test]
-    public void AddSixDropToEmptyBucket_BucketExplodeCallFunctionAndResetsDropCount()
-    {
-        bool called = false;
-        bucket.SetExplosionCallback((Bucket bucket) => { called = true; return true; });
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        Assert.AreEqual(0, bucket.Size);
-        Assert.IsFalse(bucket.Full());
-        Assert.IsTrue(called);
-        Assert.AreEqual(4, player.Drops);
-    }
+        }
 
-    [Test]
-    public void NoDropsAndDropReachesBucket_ShouldNotAllowDropToLand()
-    {
-        Assert.IsFalse(bucket.DropLanded());
-        Assert.AreEqual(0, bucket.Size);
-        Assert.AreEqual(10, player.Drops);
-    }
+        [Test]
+        public void AddOneDropToEmptyBucket_TotalDropsIs1()
+        {
+            bucket.PlayerClick();
+            Assert.AreEqual(1, bucket.Size);
+            Assert.IsFalse(bucket.Full());
+            Assert.AreEqual(9, player.Drops);
+        }
 
-    [Test]
-    public void OneDropAndDropReachesBucket_ShouldAllowDropToLandAndIncreaseBucketSize()
-    {
-        bucket.AddDrop();
-        Assert.IsTrue(bucket.DropLanded());
-        Assert.AreEqual(2, bucket.Size);
-        Assert.AreEqual(9, player.Drops);
+        [Test]
+        public void AddFiveDropToEmptyBucket_BucketIsFull()
+        {
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            bucket.PlayerClick();
+            Assert.AreEqual(5, bucket.Size);
+            Assert.IsTrue(bucket.Full());
+            Assert.AreEqual(5, player.Drops);
+        }
     }
-
-    [Test]
-    public void FiveDropsAndDropReachesBucket_ShouldAllowDropToLandAndBucketExplode()
+    public class WhenDropReachBucket: BaseBucketTest
     {
-        bool called = false;
-        bucket.SetExplosionCallback((Bucket bucket) => { called = true; return true; });
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        bucket.AddDrop();
-        Assert.IsTrue(bucket.DropLanded());
-        Assert.AreEqual(0, bucket.Size);
-        Assert.IsFalse(bucket.Full());
-        Assert.IsTrue(called);
-        Assert.AreEqual(9, player.Drops);
+        protected override void SetUp()
+        {
+
+        }
+
+        [Test]
+        public void NoDropsAndDropReachesBucket_ShouldNotAllowDropToLand()
+        {
+            Assert.IsFalse(bucket.DropLanded());
+            Assert.AreEqual(0, bucket.Size);
+            Assert.AreEqual(10, player.Drops);
+        }
+    
+        [Test]
+        public void OneDropAndDropReachesBucket_ShouldAllowDropToLandAndIncreaseBucketSize()
+        {
+            bucket.PlayerClick();
+            Assert.IsTrue(bucket.DropLanded());
+            Assert.AreEqual(2, bucket.Size);
+            Assert.AreEqual(9, player.Drops);
+        }
     }
 }

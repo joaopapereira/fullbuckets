@@ -23,8 +23,8 @@ public class PlayerImpl : Player
 }
 
 public class Game {
-    private const int boardSize = 5;
-    public int BoardSize { get { return boardSize; } }
+    private int boardSize = 5;
+    public int BoardSize { get { return boardSize; } set { boardSize = value; } }
     private Player player;
     private int maxDropsPerBucket;
     public int MaxDropsPerBucket { get { return maxDropsPerBucket; } set { maxDropsPerBucket = value;  } }
@@ -79,5 +79,15 @@ public class Game {
             }
         }
         return true;
+    }
+
+    public void PlayerClickBucket()
+    {
+        player.Drops--;
+    }
+
+    public void BucketExploded()
+    {
+        player.Drops++;
     }
 }

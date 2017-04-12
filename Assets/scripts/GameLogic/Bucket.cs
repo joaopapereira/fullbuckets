@@ -19,7 +19,7 @@ public class Bucket {
         this.game = game;
     }
 
-    public void AddDrop()
+    private void AddNewDrop()
     {
         if (Full())
         {
@@ -30,6 +30,12 @@ public class Bucket {
         {
             currentSize++;
         }
+    }
+
+    public void PlayerClick()
+    {
+        game.PlayerClickBucket();
+        AddNewDrop();
     }
 
     public bool Full()
@@ -52,7 +58,7 @@ public class Bucket {
         if(Size == 0)
             return false;
 
-        AddDrop();
+        AddNewDrop();
         return true;
     }
 }
