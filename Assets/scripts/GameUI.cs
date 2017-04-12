@@ -87,7 +87,7 @@ public class GameUI : MonoBehaviour
 
     public bool CanUserPlay()
     {
-        return flyingDrops == 0;
+        return flyingDrops == 0 && !game.Ended();
     }
 
     public Game GetGame()
