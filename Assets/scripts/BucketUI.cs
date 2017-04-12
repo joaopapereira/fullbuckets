@@ -16,10 +16,21 @@ public class BucketUI : MonoBehaviour
        button.interactable = gameController.CanUserPlay();
     }
 
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.tag == "Drop" && collider.transform.position != transform.position)
+        {
+            if (bucket.DropLanded())
+                collider.SendMessage("DropStop");
+        }
+        UpdateButton();
+    }
+
     public void AddDrop()
     {
         bucket.PlayerClick();
         UpdateButton();
+        gameController.UpdateNumberOfDropsLeft();
     }
 
     public void SetGameController(GameUI gameController)
@@ -37,17 +48,6 @@ public class BucketUI : MonoBehaviour
     public void UpdateButton()
     {
         label.text = bucket.Size.ToString();
-    }
-
-
-    void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (collider.tag == "Drop" && collider.transform.position != transform.position)
-        {
-            if (bucket.DropLanded())
-                collider.SendMessage("DropStop");
-        }
-        UpdateButton();
     }
 
     public bool ExplosionBucket(Bucket bucket)

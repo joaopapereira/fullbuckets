@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 public interface Player
 {
     int Drops { get; set; }
@@ -35,6 +34,7 @@ public class Game {
     {
         this.player = player;
         GenerateBoard();
+        this.player.Drops = 10;
     }
 
     private void GenerateBoard()

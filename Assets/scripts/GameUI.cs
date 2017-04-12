@@ -57,6 +57,7 @@ public class GameUI : MonoBehaviour
         CreateDrop(new Vector3(-velocity, 0, 0), bucket.transform.position, 270);
         CreateDrop(new Vector3(0, velocity, 0), bucket.transform.position, 180);
         CreateDrop(new Vector3(0, -velocity, 0), bucket.transform.position, 0);
+        UpdateNumberOfDropsLeft();
         return true;
     }
 
