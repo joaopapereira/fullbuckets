@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
@@ -7,11 +8,15 @@ public class GameUI : MonoBehaviour
     private Player player;
     public Transform drop;
     public int velocity;
+    public bool gameUnderWay = false;
 
 
     public BucketUI[][] buckets;
     public Button[] bucketButtons;
     public Text dropsLeftCounter;
+    public GameObject gameOverPanel;
+    public Text gameInformationText;
+    public Text restartButtonText;
 
     public int maxDropsPerBucket;
     private int flyingDrops;
@@ -48,8 +53,40 @@ public class GameUI : MonoBehaviour
                 }
             }
         }
-    }   
-    
+        ShowGameOverPanel("Press Start game");
+        SetRestartButtonText("Start");
+    }
+
+    public void Update()
+    {
+        if(game.Ended() && flyingDrops == 0)
+        {
+            if(game.Winner())
+            {
+
+            }else
+            {
+                ShowGameOverPanel("Game Over");
+            }
+        }
+    }
+
+    public void RestartButtonClick()
+    {
+        HideGameOverPanel();
+        if(!gameUnderWay)
+        {
+            gameUnderWay = true;
+            SetRestartButtonText("Restart");
+        }
+        game.DistributeDropOnBoard();
+    }
+
+    private void SetRestartButtonText(string text)
+    {
+        restartButtonText.text = text;
+    }
+
     public bool ExplosionBucket(BucketUI bucket)
     {
         game.BucketExploded();
@@ -93,5 +130,16 @@ public class GameUI : MonoBehaviour
     public Game GetGame()
     {
         return game;
+    }
+
+    private void ShowGameOverPanel(string informationText)
+    {
+        gameOverPanel.SetActive(true);
+        gameInformationText.text = informationText;
+    }
+
+    private void HideGameOverPanel()
+    {
+        gameOverPanel.SetActive(false);
     }
 }

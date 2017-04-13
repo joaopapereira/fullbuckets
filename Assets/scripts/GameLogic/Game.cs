@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 public interface Player
 {
     int Drops { get; set; }
@@ -29,7 +30,7 @@ public class Game {
     public int MaxDropsPerBucket { get { return maxDropsPerBucket; } set { maxDropsPerBucket = value;  } }
     public int TotalDropsLeft { get { return player.Drops; } }
 
-    private int[][] board;
+    private Bucket[][] board;
     public Game(Player player)
     {
         this.player = player;
@@ -39,13 +40,32 @@ public class Game {
 
     private void GenerateBoard()
     {
-        board = new int[boardSize][];
+        board = new Bucket[boardSize][];
         for (int i = 0; i < boardSize; i++)
         {
-            board[i] = new int[boardSize];
+            board[i] = new Bucket[boardSize];
+        }
+    }
+    public void DistributeDropOnBoard()
+    {
+        int dropToDistribute = 30;
+        Random random = new Random();
+        random.Next(0, 10);
+        for (int i = 0; i < boardSize; i++)
+        {
             for(int j = 0; j < boardSize; j++)
             {
-                board[i][j] = 3;
+                int drops = random.Next(0, 10);
+                if(drops < 5)
+                {
+                    if (drops > dropToDistribute)
+                        drops = dropToDistribute;
+                } else
+                {
+                    drops = 0;
+                }
+                board[i][j].Reset(drops);
+                dropToDistribute -= drops;
             }
         }
     }
@@ -56,14 +76,14 @@ public class Game {
         {
             for (int j = 0; j < boardSize; j++)
             {
-                board[i][j] = 0;
+                board[i][j].Reset();
             }
         }
     }
 
     public bool Ended()
     {
-        if (player.Drops == 0)
+        if (player.Drops == 0 || Winner())
             return true;
         return false;
     }
@@ -74,7 +94,7 @@ public class Game {
         {
             for (int j = 0; j < boardSize; j++)
             {
-                if (board[i][j] > 0)
+                if (board[i][j].Size > 0)
                     return false;
             }
         }
@@ -89,5 +109,10 @@ public class Game {
     public void BucketExploded()
     {
         player.Drops++;
+    }
+
+    public void RegisterBucket(int positionX, int positionY, Bucket bucket)
+    {
+        board[positionY][positionX] = bucket;
     }
 }

@@ -13,7 +13,8 @@ public class BucketUI : MonoBehaviour
 
     public void Update()
     {
-       button.interactable = gameController.CanUserPlay();
+        button.interactable = gameController.CanUserPlay();
+        UpdateButton();
     }
 
     void OnTriggerEnter2D(Collider2D collider)
@@ -42,6 +43,7 @@ public class BucketUI : MonoBehaviour
             bucket = new Bucket(gameController.maxDropsPerBucket, gameController.GetGame());
             UpdateButton();
             bucket.SetExplosionCallback(this.ExplosionBucket);
+            this.gameController.GetGame().RegisterBucket(positionX, positionY, bucket);
         }
     }
 
