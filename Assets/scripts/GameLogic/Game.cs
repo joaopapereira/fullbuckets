@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public interface Player
 {
@@ -29,6 +30,12 @@ public class Game {
     private int maxDropsPerBucket;
     public int MaxDropsPerBucket { get { return maxDropsPerBucket; } set { maxDropsPerBucket = value;  } }
     public int TotalDropsLeft { get { return player.Drops; } }
+    public int DropsInAir { get { return flyingDrops; } }
+
+    private int flyingDrops = 0;
+
+    private int level = 0;
+    public int CurrentLevel { get { return level; } set { level = value;  } }
 
     private Bucket[][] board;
     public Game(Player player)
@@ -46,28 +53,39 @@ public class Game {
             board[i] = new Bucket[boardSize];
         }
     }
+
     public void DistributeDropOnBoard()
     {
-        int dropToDistribute = 30;
-        Random random = new Random();
-        random.Next(0, 10);
+        int dropToDistribute = 300;
+        System.Random random = new System.Random();
         for (int i = 0; i < boardSize; i++)
         {
-            for(int j = 0; j < boardSize; j++)
+            for (int j = 0; j < boardSize; j++)
             {
-                int drops = random.Next(0, 10);
-                if(drops < 5)
+                int drops = random.Next(0, 5);
+                if (drops < 5)
                 {
                     if (drops > dropToDistribute)
                         drops = dropToDistribute;
-                } else
+                }
+                else
                 {
                     drops = 0;
                 }
-                board[i][j].Reset(drops);
                 dropToDistribute -= drops;
+                board[i][j].Reset(drops);
             }
         }
+    }
+
+    public void AddFlyingDrop()
+    {
+        flyingDrops++;
+    }
+
+    public void RemoveFlyingDrop()
+    {
+        flyingDrops--;
     }
 
     public void CleanBoard()
@@ -83,7 +101,7 @@ public class Game {
 
     public bool Ended()
     {
-        if (player.Drops == 0 || Winner())
+        if (flyingDrops == 0 && (player.Drops == 0 || Winner()))
             return true;
         return false;
     }
@@ -95,7 +113,9 @@ public class Game {
             for (int j = 0; j < boardSize; j++)
             {
                 if (board[i][j].Size > 0)
+                {
                     return false;
+                }
             }
         }
         return true;

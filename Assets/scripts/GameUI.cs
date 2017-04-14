@@ -17,9 +17,9 @@ public class GameUI : MonoBehaviour
     public GameObject gameOverPanel;
     public Text gameInformationText;
     public Text restartButtonText;
+    public Text levelText;
 
     public int maxDropsPerBucket;
-    private int flyingDrops;
 
     public void Start()
     {
@@ -59,16 +59,27 @@ public class GameUI : MonoBehaviour
 
     public void Update()
     {
-        if(game.Ended() && flyingDrops == 0)
+        if (gameUnderWay)
         {
-            if(game.Winner())
+            if (game.Ended())
             {
-
-            }else
-            {
-                ShowGameOverPanel("Game Over");
+                if (game.Winner())
+                {
+                    game.CurrentLevel++;
+                    game.DistributeDropOnBoard();
+                    UpdateLevelText();
+                }
+                else
+                {
+                    ShowGameOverPanel("Game Over");
+                }
             }
         }
+    }
+
+    private void UpdateLevelText()
+    {
+        levelText.text = "Level: " + game.CurrentLevel;
     }
 
     public void RestartButtonClick()
@@ -80,6 +91,8 @@ public class GameUI : MonoBehaviour
             SetRestartButtonText("Restart");
         }
         game.DistributeDropOnBoard();
+        game.CurrentLevel = 0;
+        UpdateLevelText();
     }
 
     private void SetRestartButtonText(string text)
@@ -114,17 +127,17 @@ public class GameUI : MonoBehaviour
 
     public void AddFlyingDrop()
     {
-        flyingDrops++;
+        game.AddFlyingDrop();
     }
 
     public void DiedFlyingDrop()
     {
-        flyingDrops--;
+        game.RemoveFlyingDrop();
     }
 
     public bool CanUserPlay()
     {
-        return flyingDrops == 0 && !game.Ended();
+        return game.DropsInAir == 0 && !game.Ended();
     }
 
     public Game GetGame()
