@@ -70,4 +70,48 @@ public class GameTest {
             Assert.IsFalse(game.Ended(), "Game ended");
         }
     }
+    public class UserDrops : BaseTest
+    {
+        protected override void SetUp()
+        {
+        }
+
+        [Test]
+        public void SingleExplosion_DoNotIncreaseDropCount()
+        {
+            player.Drops = 5;
+            game.BucketExploded();
+            Assert.AreEqual(5, player.Drops);
+        }
+
+        [Test]
+        public void Chain2Explosions_DoIncreaseDropCountByOne()
+        {
+            player.Drops = 5;
+            game.BucketExploded();
+            game.BucketExploded();
+            Assert.AreEqual(6, player.Drops);
+        }
+
+        [Test]
+        public void Chain4Explosions_DoIncreaseDropCountByThree()
+        {
+            player.Drops = 5;
+            game.BucketExploded();
+            game.BucketExploded();
+            game.BucketExploded();
+            game.BucketExploded();
+            Assert.AreEqual(8, player.Drops);
+        }
+
+        [Test]
+        public void WhenExplosionThenPlayerClickAndExplosion_OnlyDecreaseByOneDueToUserClick()
+        {
+            player.Drops = 5;
+            game.BucketExploded();
+            game.PlayerClickBucket();
+            game.BucketExploded();
+            Assert.AreEqual(4, player.Drops);
+        }
+    }
 }

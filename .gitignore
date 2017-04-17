@@ -262,3 +262,6 @@ __pycache__/
 /Temp
 /Temp
 /Library
+/FullBuckets.exe
+*.exe
+/MacDist.app/Contents

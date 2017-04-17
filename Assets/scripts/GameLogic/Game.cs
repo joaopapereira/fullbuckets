@@ -36,6 +36,7 @@ public class Game {
 
     private int level = 0;
     public int CurrentLevel { get { return level; } set { level = value;  } }
+    private bool chainReaction = false;
 
     private Bucket[][] board;
     public Game(Player player)
@@ -124,11 +125,15 @@ public class Game {
     public void PlayerClickBucket()
     {
         player.Drops--;
+        chainReaction = false;
     }
 
     public void BucketExploded()
     {
-        player.Drops++;
+        if (chainReaction)
+            player.Drops++;
+        else
+            chainReaction = true;
     }
 
     public void RegisterBucket(int positionX, int positionY, Bucket bucket)

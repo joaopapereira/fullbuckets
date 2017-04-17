@@ -18,6 +18,8 @@ public class GameUI : MonoBehaviour
     public Text gameInformationText;
     public Text restartButtonText;
     public Text levelText;
+    public Text helpButtonText;
+    public Text helpText;
 
     public int maxDropsPerBucket;
 
@@ -143,6 +145,19 @@ public class GameUI : MonoBehaviour
     public Game GetGame()
     {
         return game;
+    }
+
+    public void ClickHelpButton()
+    {
+        if (helpText.enabled)
+        {
+            helpText.enabled = false;
+            helpButtonText.text = "Help";
+        } else
+        {
+            helpButtonText.text = "Close Help";
+            helpText.enabled = true;
+        }
     }
 
     private void ShowGameOverPanel(string informationText)
